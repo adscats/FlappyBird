@@ -2,6 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://b5cx1b0l5vwex" path="res://assets/textures/background.png" id="1_yqjtg"]
 [ext_resource type="PackedScene" uid="uid://cbxghlvx2ibxt" path="res://scenes/player.tscn" id="2_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://dkh4qe0e6a34l" path="res://scenes/obstacle.tscn" id="3_lbhrr"]
+[ext_resource type="PackedScene" uid="uid://xhkvqnnysyuf" path="res://scenes/ground.tscn" id="3_lnu2h"]
 
 [node name="Game" type="Node2D" unique_id=1316897004]
 
@@ -9,5 +11,11 @@
 position = Vector2(240, 427)
 texture = ExtResource("1_yqjtg")
 
-[node name="Player" parent="Background" unique_id=1916658989 instance=ExtResource("2_lnu2h")]
-position = Vector2(-169, -24)
+[node name="Player" parent="." unique_id=1916658989 instance=ExtResource("2_lnu2h")]
+position = Vector2(70, 386)
+
+[node name="Obstacle" parent="." unique_id=1953505906 instance=ExtResource("3_lbhrr")]
+position = Vector2(420, 351)
+
+[node name="Ground" parent="." unique_id=626341130 instance=ExtResource("3_lnu2h")]
+position = Vector2(0, 686)
