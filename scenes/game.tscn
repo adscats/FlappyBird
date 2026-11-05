@@ -1,21 +1,30 @@
 [gd_scene format=3 uid="uid://bt6cfq172borv"]
 
+[ext_resource type="Script" uid="uid://cktd8uduls0xk" path="res://scripts/game.gd" id="1_iywne"]
 [ext_resource type="Texture2D" uid="uid://b5cx1b0l5vwex" path="res://assets/textures/background.png" id="1_yqjtg"]
 [ext_resource type="PackedScene" uid="uid://cbxghlvx2ibxt" path="res://scenes/player.tscn" id="2_lnu2h"]
-[ext_resource type="PackedScene" uid="uid://dkh4qe0e6a34l" path="res://scenes/obstacle.tscn" id="3_lbhrr"]
+[ext_resource type="PackedScene" uid="uid://dac2bp3j2xqq7" path="res://scenes/hud.tscn" id="2_p57ef"]
 [ext_resource type="PackedScene" uid="uid://xhkvqnnysyuf" path="res://scenes/ground.tscn" id="3_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://cr6piv26n3tsl" path="res://scenes/obstacle_spawner.tscn" id="3_p57ef"]
 
 [node name="Game" type="Node2D" unique_id=1316897004]
+script = ExtResource("1_iywne")
+
+[node name="HUD" parent="." unique_id=1406515136 instance=ExtResource("2_p57ef")]
 
 [node name="Background" type="Sprite2D" parent="." unique_id=2079767060]
 position = Vector2(240, 427)
 texture = ExtResource("1_yqjtg")
 
-[node name="Player" parent="." unique_id=1916658989 instance=ExtResource("2_lnu2h")]
-position = Vector2(70, 386)
-
-[node name="Obstacle" parent="." unique_id=1953505906 instance=ExtResource("3_lbhrr")]
-position = Vector2(420, 351)
+[node name="ObstacleSpawner" parent="." unique_id=734516537 instance=ExtResource("3_p57ef")]
+position = Vector2(700, 400)
 
 [node name="Ground" parent="." unique_id=626341130 instance=ExtResource("3_lnu2h")]
 position = Vector2(0, 686)
+
+[node name="Player" parent="." unique_id=1916658989 instance=ExtResource("2_lnu2h")]
+position = Vector2(67, 392)
+
+[connection signal="died" from="Player" to="." method="_on_player_died"]
+[connection signal="game_started" from="Player" to="." method="_on_player_game_started"]
+[connection signal="scored" from="Player" to="." method="_on_player_scored"]

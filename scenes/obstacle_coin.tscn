@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bn3qq3nl75xci"]
+
+[ext_resource type="PackedScene" uid="uid://dkh4qe0e6a34l" path="res://scenes/obstacle.tscn" id="1_chy0e"]
+
+[node name="ObstacleCoin" type="Node2D" unique_id=1384160835]
+
+[node name="Obstacle" parent="." unique_id=1953505906 instance=ExtResource("1_chy0e")]
+position = Vector2(1, 1)
+
+[node name="Coin" type="Sprite2D" parent="." unique_id=553754683]
