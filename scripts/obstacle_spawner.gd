@@ -4,7 +4,7 @@ extends Node2D
 
 var obstacle_scene: PackedScene = preload("res://scenes/obstacle.tscn")
 
-var max_y_pos := -230.0
+var max_y_pos := -210.0
 var min_y_pos := 120.0
 
 func _on_spawn_timer_timeout() -> void:
