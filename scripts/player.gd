@@ -5,7 +5,12 @@ signal game_started
 signal died
 signal scored
 
+@onready var score_sound: AudioStreamPlayer = $ScoreSound
+@onready var hit_sound: AudioStreamPlayer = $HitSound
+@onready var flap_sound: AudioStreamPlayer = $FlapSound
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+
+
 var started := false
 
 var is_alive := true
@@ -43,12 +48,15 @@ func flap() -> void:
 	linear_velocity.y = flap_force
 	angular_velocity = -8.0
 	animation_player.play("flap")
+	flap_sound.play()
 	
 func die() -> void:
 	if is_alive:
 		is_alive = false
 		died.emit()
+		hit_sound.play()
 		
 func score_point() -> void:
 	if is_alive:
 		scored.emit()
+		score_sound.play()

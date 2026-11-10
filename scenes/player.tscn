@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://d110hfh4aagd5" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://pcxvhd4342g3" path="res://assets/textures/bird.png" id="2_qhqgy"]
+[ext_resource type="AudioStream" uid="uid://cq1yn2hj6nphv" path="res://assets/audio/wing.wav" id="3_qhqgy"]
+[ext_resource type="AudioStream" uid="uid://clle1v1xq6bf2" path="res://assets/audio/hit.wav" id="4_qlg0r"]
+[ext_resource type="AudioStream" uid="uid://cvin757hptmq7" path="res://assets/audio/point.wav" id="5_tuyoq"]
 
 [sub_resource type="Animation" id="Animation_dqkch"]
 length = 0.001
@@ -115,3 +118,12 @@ frame = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=257444765]
 shape = SubResource("CircleShape2D_fjrip")
+
+[node name="FlapSound" type="AudioStreamPlayer" parent="." unique_id=1784371737]
+stream = ExtResource("3_qhqgy")
+
+[node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=820233138]
+stream = ExtResource("4_qlg0r")
+
+[node name="ScoreSound" type="AudioStreamPlayer" parent="." unique_id=480855646]
+stream = ExtResource("5_tuyoq")
