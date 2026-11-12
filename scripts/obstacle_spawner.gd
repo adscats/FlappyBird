@@ -4,30 +4,44 @@ extends Node2D
 
 var obstacle_scene: PackedScene = preload("res://scenes/obstacle.tscn")
 var coin_scene: PackedScene = preload("res://scenes/coin.tscn")
+var chest_scene: PackedScene = preload("res://scenes/chest.tscn")
 
 var max_y_pos := -210.0
 var min_y_pos := 120.0
 
-# Gap between pipes is 600 units (top pipe at y-300, bottom at y+300 relative to obstacle)
-# Coin spawns in the middle of that gap
-var coin_spawn_chance := 0.17  # 17% chance a coin spawns with each pipe pair
+var collectible_spawn_chance := 0.30
+var chest_ratio := 0.40
+
+const BASE_WAIT_TIME := 1.5
+var current_speed_scale := 1.0
 
 func _on_spawn_timer_timeout() -> void:
 	var obstacle = obstacle_scene.instantiate()
 	add_child(obstacle)
 	var obstacle_y = randf_range(max_y_pos, min_y_pos)
 	obstacle.position.y = obstacle_y
+	# Apply current speed scale to freshly spawned obstacle
+	if current_speed_scale != 1.0:
+		obstacle.set_speed_scale(current_speed_scale)
 
-	# Randomly spawn a coin in the gap between the pipes
-	if randf() < coin_spawn_chance:
-		var coin = coin_scene.instantiate()
-		# Add to the game root (get_parent()) so coin spawns in world space
-		get_parent().add_child(coin)
-		# The gap center is exactly at the obstacle's world y position.
-		# ObstacleSpawner is at y=400, obstacle_y is the local offset.
-		# PipeTop is at obstacle_y - 300, PipeBottom at obstacle_y + 300 (local),
-		# so the gap midpoint in world space = global_position.y + obstacle_y.
-		coin.global_position = Vector2(global_position.x, global_position.y + obstacle_y)
+	if randf() < collectible_spawn_chance:
+		var spawn_y = global_position.y + obstacle_y
+		if randf() < chest_ratio:
+			var chest = chest_scene.instantiate()
+			get_parent().add_child(chest)
+			chest.global_position = Vector2(global_position.x, spawn_y)
+			if current_speed_scale != 1.0:
+				chest.set_speed_scale(current_speed_scale)
+		else:
+			var coin = coin_scene.instantiate()
+			get_parent().add_child(coin)
+			coin.global_position = Vector2(global_position.x, spawn_y)
+			if current_speed_scale != 1.0:
+				coin.set_speed_scale(current_speed_scale)
+
+func set_speed_scale(speed_scale: float) -> void:
+	current_speed_scale = speed_scale
+	spawn_timer.wait_time = BASE_WAIT_TIME / speed_scale
 
 func start() -> void:
 	spawn_timer.start()

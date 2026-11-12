@@ -1,5 +1,6 @@
 extends CharacterBody2D
 
+var base_speed := -215.0
 var speed := -215.0
 
 func _physics_process(_delta: float) -> void:
@@ -12,10 +13,13 @@ func _physics_process(_delta: float) -> void:
 func _on_pipe_body_entered(body: Node2D) -> void:
 	if body is Player:
 		body.die()
-	
+
 func _on_score_area_body_entered(body: Node2D) -> void:
 	if body is Player:
 		body.score_point()
 
 func stop() -> void:
 	speed = 0.0
+
+func set_speed_scale(speed_scale: float) -> void:
+	speed = base_speed * speed_scale

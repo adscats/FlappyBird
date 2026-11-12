@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dbgpu45krl4g4" path="res://scripts/coin.gd" id="1_coin"]
 [ext_resource type="Texture2D" uid="uid://b8hmvhbnlu8xj" path="res://assets/textures/coin.png" id="2_coin"]
 [ext_resource type="AudioStream" uid="uid://chfo8rbhb26kx" path="res://assets/audio/coin.wav" id="3_coin"]
+[ext_resource type="FontFile" uid="uid://by5m7jclqcshe" path="res://assets/fonts/flappyfont.TTF" id="4_coin_font"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f0"]
 atlas = ExtResource("2_coin")
@@ -99,6 +100,25 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_coin"]
 radius = 28.0
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_coin"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 40.0
+initial_velocity_max = 90.0
+gravity = Vector3(0, 180, 0)
+scale_min = 2.0
+scale_max = 3.5
+color = Color(1, 0.9, 0.2, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_coin_popup"]
+font = ExtResource("4_coin_font")
+font_size = 24
+font_color = Color(1, 0.92, 0.2, 1)
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.5)
+
 [node name="Coin" type="Area2D" unique_id=1172764726 groups=["obstacles"]]
 z_index = 2
 collision_layer = 0
@@ -113,6 +133,32 @@ autoplay = "spin"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=653725739]
 shape = SubResource("CircleShape2D_coin")
+
+[node name="Particles" type="GPUParticles2D" parent="." unique_id=1172764727]
+amount = 14
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.95
+process_material = SubResource("ParticleProcessMaterial_coin")
+emitting = false
+
+[node name="LabelPopup" type="Label" parent="." unique_id=1172764728]
+z_index = 10
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -40.0
+offset_right = 50.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "+1"
+label_settings = SubResource("LabelSettings_coin_popup")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="CoinSound" type="AudioStreamPlayer" parent="." unique_id=818680794]
 stream = ExtResource("3_coin")

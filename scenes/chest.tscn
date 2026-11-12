@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://chest0001"]
+
+[ext_resource type="Script" uid="uid://csi17fyy17rg5" path="res://scripts/chest.gd" id="1_chest"]
+[ext_resource type="Texture2D" uid="uid://c6gflifcehrov" path="res://assets/textures/box.png" id="2_chest"]
+[ext_resource type="AudioStream" uid="uid://chfo8rbhb26kx" path="res://assets/audio/coin.wav" id="3_chest"]
+[ext_resource type="FontFile" uid="uid://by5m7jclqcshe" path="res://assets/fonts/flappyfont.TTF" id="4_chest_font"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_chest"]
+radius = 26.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_chest"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+spread = 60.0
+initial_velocity_min = 40.0
+initial_velocity_max = 100.0
+gravity = Vector3(0, 250, 0)
+scale_min = 2.0
+scale_max = 4.0
+color = Color(1, 0.85, 0.1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_popup"]
+font = ExtResource("4_chest_font")
+font_size = 28
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Chest" type="Area2D" unique_id=2000000001 groups=["obstacles"]]
+z_index = 2
+collision_layer = 0
+script = ExtResource("1_chest")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2000000002]
+scale = Vector2(0.033, 0.033)
+texture = ExtResource("2_chest")
+
+[node name="OpenSprite" type="Sprite2D" parent="." unique_id=2000000003]
+modulate = Color(1, 1, 0.3, 1)
+scale = Vector2(0.033, 0.033)
+texture = ExtResource("2_chest")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2000000004]
+shape = SubResource("CircleShape2D_chest")
+
+[node name="Particles" type="GPUParticles2D" parent="." unique_id=2000000005]
+emitting = false
+amount = 20
+lifetime = 0.8
+one_shot = true
+explosiveness = 0.95
+process_material = SubResource("ParticleProcessMaterial_chest")
+
+[node name="LabelPopup" type="Label" parent="." unique_id=2000000006]
+z_index = 10
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "+10 COINS!"
+label_settings = SubResource("LabelSettings_popup")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollectSound" type="AudioStreamPlayer" parent="." unique_id=2000000007]
+stream = ExtResource("3_chest")
+volume_db = 3.0
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
