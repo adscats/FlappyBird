@@ -32,42 +32,53 @@ const SKIN_TEXTURES := {
 		"mid":  "res://assets/textures/skins/bluebird-midflap.png",
 		"down": "res://assets/textures/skins/bluebird-downflap.png",
 		"up":   "res://assets/textures/skins/bluebird-upflap.png",
-		"scale": Vector2.ONE,
+		"scale": Vector2(1.2, 1.2),
 	},
 	"red": {
 		"mid":  "res://assets/textures/skins/redbird-midflap.png",
 		"down": "res://assets/textures/skins/redbird-downflap.png",
 		"up":   "res://assets/textures/skins/redbird-upflap.png",
-		"scale": Vector2.ONE,
+		"scale": Vector2(1.2, 1.2),
 	},
 }
 
 # Called by game.gd after load
 func apply_skin(skin_id: String) -> void:
 	_skin_id = skin_id
-	animation_player.stop()
+
+	# Pause animation player first to prevent it from applying frame changes
+	animation_player.pause()
+
 	if skin_id == "default" or skin_id not in SKIN_TEXTURES:
-		# Set hframes BEFORE frame to avoid out of bounds
+		# Set up the default yellow bird with spritesheet
 		sprite.hframes = 3
+		sprite.vframes = 1
 		sprite.texture = load("res://assets/textures/bird.png")
-		# Scale down default yellow bird slightly to match custom skins
 		sprite.scale = Vector2(0.82, 0.82)
 		sprite.frame = 1
 		_skin_mid = null
-		if !started:
-			animation_player.play("idle")
+		# Resume and play animation for default bird
+		animation_player.play("idle")
 	else:
+		# For custom skins, keep animation paused
+		sprite.hframes = 1
+		sprite.vframes = 1
+		sprite.frame = 0
+
 		var data = SKIN_TEXTURES[skin_id]
 		_skin_mid  = load(data["mid"])
 		_skin_down = load(data["down"])
 		_skin_up   = load(data["up"])
-		sprite.hframes = 1
 		sprite.texture = _skin_mid
 		sprite.scale = data.get("scale", Vector2.ONE)
-		sprite.frame = 0
+
+		# Start flapping animation for custom skins in idle state
+		if !started:
+			_do_continuous_skin_flap()
 
 func _process(_delta: float) -> void:
-	if !started and _skin_id != "default":
+	if !started:
+		# Animate idle flying with bobbing motion
 		sprite.position.y = -5 + sin(Time.get_ticks_msec() * 0.008) * 6.0
 	elif started:
 		sprite.position.y = 0
@@ -128,6 +139,13 @@ func _do_skin_flap() -> void:
 			sprite.texture = _skin_mid
 			sprite.scale = skin_scale
 	).set_delay(0.16)
+
+func _do_continuous_skin_flap() -> void:
+	if !started and _skin_id in SKIN_TEXTURES:
+		_do_skin_flap()
+		# Loop the flapping animation every 0.4 seconds
+		await get_tree().create_timer(0.4).timeout
+		_do_continuous_skin_flap()
 
 func die() -> void:
 	if is_alive:

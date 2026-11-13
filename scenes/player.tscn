@@ -117,6 +117,7 @@ hframes = 3
 frame = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=257444765]
+position = Vector2(0, -4)
 shape = SubResource("CircleShape2D_fjrip")
 
 [node name="FlapSound" type="AudioStreamPlayer" parent="." unique_id=1784371737]

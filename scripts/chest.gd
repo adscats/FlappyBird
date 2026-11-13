@@ -2,13 +2,12 @@ extends Area2D
 
 signal chest_opened(reward_type: String)
 
-@onready var sprite: Sprite2D = $Sprite2D
-@onready var open_sprite: Sprite2D = $OpenSprite
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var collect_sound: AudioStreamPlayer = $CollectSound
 @onready var particles: GPUParticles2D = $Particles
 @onready var label_popup: Label = $LabelPopup
 
-var base_scale: Vector2 = Vector2(0.033, 0.033)
+var base_scale: Vector2 = Vector2(2.0, 2.0)
 
 const REWARD_SLOW = "slow"
 const REWARD_COINS = "coins"
@@ -29,11 +28,11 @@ const REWARD_DATA := {
 }
 
 func _ready() -> void:
-	base_scale = sprite.scale
-	open_sprite.scale = base_scale
-	open_sprite.visible = false
+	base_scale = animated_sprite.scale
 	label_popup.visible = false
 	label_popup.modulate.a = 0.0
+	# Start with closed animation
+	animated_sprite.play("closed")
 	# Defer so global_position is set by spawner before we record origin
 	call_deferred("_init_bob")
 
@@ -53,14 +52,16 @@ func _process(delta: float) -> void:
 		# Pulse brightness
 		_pulse_time += delta
 		var t := (sin(_pulse_time * TAU / 1.2) + 1.0) * 0.5
-		sprite.modulate = Color(1.0 + t * 0.2, 1.0 + t * 0.15, 1.0 - t * 0.1)
+		animated_sprite.modulate = Color(1.0 + t * 0.2, 1.0 + t * 0.15, 1.0 - t * 0.1)
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is Player and not collected:
 		collected = true
 		speed = 0.0
 		$CollisionShape2D.set_deferred("disabled", true)
-		sprite.visible = false
+
+		# Switch to open animation
+		animated_sprite.play("open")
 
 		var reward := _pick_reward()
 		_apply_reward(reward)
@@ -85,9 +86,6 @@ func _apply_reward(reward: String) -> void:
 func _play_open_animation(reward: String) -> void:
 	var data: Dictionary = REWARD_DATA[reward]
 	var color: Color = data["color"]
-
-	sprite.visible = false
-	open_sprite.visible = false
 
 	if particles.process_material is ParticleProcessMaterial:
 		var mat := particles.process_material.duplicate() as ParticleProcessMaterial
@@ -114,6 +112,11 @@ func _play_open_animation(reward: String) -> void:
 	tween.tween_property(label_popup, "modulate:a", 0.0, 0.15)
 	await tween.finished
 
+	# Wait a moment for the open animation to be visible, then disappear
+	await get_tree().create_timer(0.001).timeout
+	var fade := create_tween()
+	fade.tween_property(animated_sprite, "modulate:a", 0.0, 0.3)
+	await fade.finished
 	queue_free()
 
 func stop() -> void:

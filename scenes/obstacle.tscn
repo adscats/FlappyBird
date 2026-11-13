@@ -6,7 +6,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_us6mb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3pn3o"]
-size = Vector2(72, 2119)
+size = Vector2(72, 1891)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_blot6"]
 size = Vector2(72, 482)
@@ -29,7 +29,7 @@ texture = ExtResource("2_cjuko")
 flip_v = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PipeTop" unique_id=303475070]
-position = Vector2(0, -819.5)
+position = Vector2(0, -705.5)
 shape = SubResource("RectangleShape2D_3pn3o")
 
 [node name="PipeBottom" type="Area2D" parent="." unique_id=591924317]

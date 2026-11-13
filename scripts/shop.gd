@@ -11,9 +11,9 @@ signal shop_closed
 var game_node: Node = null
 
 const SKINS := [
-	{"id": "default", "name": "Classic Yellow", "price": 0, "texture": "res://assets/textures/bird.png"},
-	{"id": "blue", "name": "Blue Jay", "price": 20, "texture": "res://assets/textures/skins/bluebird-midflap.png"},
-	{"id": "red", "name": "Red Robin", "price": 50, "texture": "res://assets/textures/skins/redbird-midflap.png"},
+	{"id": "default", "name": "Classic Yellow", "price": 0, "texture": "res://assets/textures/skins/bird_photo.png"},
+	{"id": "blue", "name": "Blue Jay", "price": 150, "texture": "res://assets/textures/skins/bluebird-midflap.png"},
+	{"id": "red", "name": "Red Robin", "price": 300, "texture": "res://assets/textures/skins/redbird-midflap.png"},
 ]
 
 func _ready() -> void:
@@ -94,10 +94,7 @@ func refresh_display() -> void:
 		tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 
 		if skin_id == "default":
-			var atlas = AtlasTexture.new()
-			atlas.atlas = load(skin["texture"])
-			atlas.region = Rect2(34, 0, 34, 24)
-			tex_rect.texture = atlas
+			tex_rect.texture = load(skin["texture"])
 		else:
 			tex_rect.texture = load(skin["texture"])
 
