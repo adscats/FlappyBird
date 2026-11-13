@@ -42,3 +42,9 @@ Chests can provide random rewards, such as:
 
 - Add more bird skins and shop items.
 - Add different chests and rewards.
+
+## Gameplay
+<img width="468" height="850" alt="k" src="https://github.com/user-attachments/assets/bf9618ee-f80c-4992-a825-344bf2d3cc42" />
+
+
+
