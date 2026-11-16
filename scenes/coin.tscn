@@ -98,7 +98,7 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_coin"]
-radius = 28.0
+radius = 16.155495
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_coin"]
 particle_flag_disable_z = true
@@ -122,7 +122,6 @@ shadow_color = Color(0, 0, 0, 0.5)
 [node name="Coin" type="Area2D" unique_id=1172764726 groups=["obstacles"]]
 z_index = 2
 collision_layer = 0
-collision_mask = 1
 script = ExtResource("1_coin")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=187245237]
@@ -135,12 +134,12 @@ autoplay = "spin"
 shape = SubResource("CircleShape2D_coin")
 
 [node name="Particles" type="GPUParticles2D" parent="." unique_id=1172764727]
+emitting = false
 amount = 14
 lifetime = 0.5
 one_shot = true
 explosiveness = 0.95
 process_material = SubResource("ParticleProcessMaterial_coin")
-emitting = false
 
 [node name="LabelPopup" type="Label" parent="." unique_id=1172764728]
 z_index = 10
