@@ -174,3 +174,4 @@ func score_point() -> void:
 	if is_alive:
 		scored.emit()
 		score_sound.play()
+#
