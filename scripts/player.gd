@@ -26,7 +26,8 @@ var _skin_id := "default"
 var _skin_mid: Texture2D = null
 var _skin_down: Texture2D = null
 var _skin_up: Texture2D = null
-
+var _skin_loop_id := 0
+var _skin_flap_tween: Tween
 const SKIN_TEXTURES := {
 	"blue": {
 		"mid":  "res://assets/textures/skins/bluebird-midflap.png",
@@ -45,36 +46,40 @@ const SKIN_TEXTURES := {
 # Called by game.gd after load
 func apply_skin(skin_id: String) -> void:
 	_skin_id = skin_id
-
-	# Pause animation player first to prevent it from applying frame changes
-	animation_player.pause()
+	_skin_loop_id += 1
+	if _skin_flap_tween and _skin_flap_tween.is_running():
+		_skin_flap_tween.kill()
+	animation_player.stop(true)
+	sprite.frame = 0
 
 	if skin_id == "default" or skin_id not in SKIN_TEXTURES:
-		# Set up the default yellow bird with spritesheet
+		_skin_mid = null
+
 		sprite.hframes = 3
 		sprite.vframes = 1
 		sprite.texture = load("res://assets/textures/bird.png")
+		sprite.region_enabled = false
+		sprite.frame = 0
 		sprite.scale = Vector2(0.82, 0.82)
-		sprite.frame = 1
-		_skin_mid = null
-		# Resume and play animation for default bird
-		animation_player.play("idle")
+
+		animation_player.play("idle") # Restore idle animation for the default bird
 	else:
-		# For custom skins, keep animation paused
+		var data: Dictionary = SKIN_TEXTURES[skin_id]
+
+		_skin_mid = load(data["mid"])
+		_skin_down = load(data["down"])
+		_skin_up = load(data["up"])
+
 		sprite.hframes = 1
 		sprite.vframes = 1
-		sprite.frame = 0
-
-		var data = SKIN_TEXTURES[skin_id]
-		_skin_mid  = load(data["mid"])
-		_skin_down = load(data["down"])
-		_skin_up   = load(data["up"])
 		sprite.texture = _skin_mid
+		sprite.region_enabled = false
+		sprite.frame = 0
 		sprite.scale = data.get("scale", Vector2.ONE)
 
-		# Start flapping animation for custom skins in idle state
-		if !started:
-			_do_continuous_skin_flap()
+		if not started:
+			_start_continuous_skin_flap()
+
 
 func _process(_delta: float) -> void:
 	if !started:
@@ -102,6 +107,9 @@ func _physics_process(_delta: float) -> void:
 			angular_velocity = 0.0
 
 func start_game() -> void:
+	_skin_loop_id += 1
+	if _skin_flap_tween and _skin_flap_tween.is_running():
+		_skin_flap_tween.kill()
 	started = true
 	gravity_scale = 1.0
 	if _skin_id == "default":
@@ -111,41 +119,50 @@ func start_game() -> void:
 
 func flap() -> void:
 	linear_velocity.y = flap_force
-	angular_velocity = -8.0
+	angular_velocity = flap_angular_force
 	flap_sound.play()
+
 	if _skin_id == "default":
 		animation_player.play("flap")
 	else:
 		_do_skin_flap()
 
 func _do_skin_flap() -> void:
-	var skin_scale = SKIN_TEXTURES[_skin_id].get("scale", Vector2.ONE) if _skin_id in SKIN_TEXTURES else Vector2.ONE
-	# up → mid → down → mid over ~0.4 s using a short tween
+	if _skin_flap_tween and _skin_flap_tween.is_running():
+		_skin_flap_tween.kill()
+
+	var skin_id := _skin_id
+	var skin_scale: Vector2 = SKIN_TEXTURES[skin_id].get("scale", Vector2.ONE)
+
 	sprite.texture = _skin_up
 	sprite.scale = skin_scale
-	var tw := create_tween()
-	tw.tween_callback(func():
-		if _skin_mid:
+
+	_skin_flap_tween = create_tween()
+	_skin_flap_tween.tween_callback(func():
+		if _skin_id == skin_id and _skin_mid:
 			sprite.texture = _skin_mid
-			sprite.scale = skin_scale
 	).set_delay(0.12)
-	tw.tween_callback(func():
-		if _skin_down:
+	_skin_flap_tween.tween_callback(func():
+		if _skin_id == skin_id and _skin_down:
 			sprite.texture = _skin_down
-			sprite.scale = skin_scale
 	).set_delay(0.12)
-	tw.tween_callback(func():
-		if _skin_mid:
+	_skin_flap_tween.tween_callback(func():
+		if _skin_id == skin_id and _skin_mid:
 			sprite.texture = _skin_mid
-			sprite.scale = skin_scale
 	).set_delay(0.16)
 
-func _do_continuous_skin_flap() -> void:
-	if !started and _skin_id in SKIN_TEXTURES:
+
+func _start_continuous_skin_flap() -> void:
+	_skin_loop_id += 1
+	var loop_id := _skin_loop_id
+	_do_continuous_skin_flap(loop_id)
+
+
+func _do_continuous_skin_flap(loop_id: int) -> void:
+	while loop_id == _skin_loop_id and not started and _skin_id in SKIN_TEXTURES:
 		_do_skin_flap()
-		# Loop the flapping animation every 0.4 seconds
 		await get_tree().create_timer(0.4).timeout
-		_do_continuous_skin_flap()
+
 
 func die() -> void:
 	if is_alive:

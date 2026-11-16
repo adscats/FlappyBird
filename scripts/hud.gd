@@ -17,6 +17,7 @@ var _bank_tween: Tween = null
 var _bank_ready := false
 
 func _ready() -> void:
+	start_message.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	start_message.visible = true
 	shop_button.visible = true
 	game_over_screen.visible = false
