@@ -45,8 +45,3 @@ Chests can provide random rewards, such as:
 
 ## Gameplay
 <img width="468" height="850" alt="e" src="https://github.com/user-attachments/assets/2ed3e370-2da9-4c13-9f72-de230c41c3e8" />
-
-
-
-
-
