@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://csi17fyy17rg5" path="res://scripts/chest.gd" id="1_chest"]
 [ext_resource type="Texture2D" uid="uid://c6567holenvf5" path="res://assets/textures/MysteryBox.png" id="2_chest"]
-[ext_resource type="AudioStream" uid="uid://chfo8rbhb26kx" path="res://assets/audio/coin.wav" id="3_chest"]
 [ext_resource type="FontFile" uid="uid://by5m7jclqcshe" path="res://assets/fonts/flappyfont.TTF" id="4_chest_font"]
+[ext_resource type="AudioStream" uid="uid://b1ea4h0lwgfqy" path="res://assets/audio/chest_collect.wav" id="4_yue2o"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yue2o"]
 atlas = ExtResource("2_chest")
@@ -92,7 +92,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="CollectSound" type="AudioStreamPlayer" parent="." unique_id=2000000007]
-stream = ExtResource("3_chest")
-volume_db = 3.0
+stream = ExtResource("4_yue2o")
+volume_db = 15.0
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
